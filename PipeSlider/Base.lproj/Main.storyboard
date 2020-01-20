@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="pipe_slider" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="90" translatesAutoresizingMaskIntoConstraints="NO" id="8Pg-6U-ve1">
+                                <rect key="frame" x="122" y="303" width="170" height="300"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3WK-73-Y11" customClass="PipeSlider" customModule="pipe_slider" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="300"/>
+                                        <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="300" id="RSV-ap-27G"/>
+                                            <constraint firstAttribute="width" constant="40" id="bOE-35-fWG"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WSk-Ja-MXv" customClass="PipeSlider" customModule="pipe_slider" customModuleProvider="target">
+                                        <rect key="frame" x="130" y="0.0" width="40" height="300"/>
+                                        <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="YSO-K7-5FD"/>
+                                            <constraint firstAttribute="height" constant="300" id="n7X-49-ED1"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="We0-3g-KZT" customClass="PipeSlider" customModule="pipe_slider" customModuleProvider="target">
+                                <rect key="frame" x="20" y="822" width="374" height="40"/>
+                                <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="GYJ-rf-HFt"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WFd-0P-A8I" customClass="PipeSlider" customModule="pipe_slider" customModuleProvider="target">
+                                <rect key="frame" x="47" y="44" width="320" height="43"/>
+                                <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="1qC-E8-jWz"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="WFd-0P-A8I" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="97q-RN-nzx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="WFd-0P-A8I" secondAttribute="trailing" constant="20" id="9Hh-ut-buC"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="We0-3g-KZT" secondAttribute="trailing" constant="20" id="M5h-1u-scI"/>
+                            <constraint firstItem="We0-3g-KZT" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Mnr-Dt-She"/>
+                            <constraint firstItem="8Pg-6U-ve1" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Vsx-ev-V3H"/>
+                            <constraint firstItem="8Pg-6U-ve1" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="ei6-Ro-67G"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="We0-3g-KZT" secondAttribute="bottom" id="rQg-Gd-vun"/>
+                            <constraint firstItem="WFd-0P-A8I" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="z20-lO-1a9"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="bottomUp" destination="WSk-Ja-MXv" id="cW4-sV-CT5"/>
+                        <outlet property="leftToRight" destination="WFd-0P-A8I" id="i0a-I9-Qa6"/>
+                        <outlet property="rightToLeft" destination="We0-3g-KZT" id="qk9-Di-OhX"/>
+                        <outlet property="topDown" destination="3WK-73-Y11" id="VMn-JJ-DDD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="137.94642857142856"/>
+        </scene>
+    </scenes>
+</document>

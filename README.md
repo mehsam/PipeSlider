@@ -9,7 +9,7 @@ For using swift version `4.0`
 
 ## Setup
 ### Install using Cocoapods (recommended)
-1. Add `PipeSlider` to your podfile and run `pod install`
+1. Add  `pod 'PipeSlider', '~> 1.0.0'`  to your podfile and run `pod install`
 2. Create a UIView and set it's class to PipeSlider at the storyboard or create from your code just like a UIView.
 3. Set `direction` from topDown, bottomUp, leftToRight, or rightToLeft
 

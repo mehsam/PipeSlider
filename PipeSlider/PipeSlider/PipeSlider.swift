@@ -8,122 +8,66 @@
 
 import UIKit
 
-enum GrowingDirection: Int {
+public enum GrowingDirection: Int {
     case bottomUp = 0
     case topDown = 1
     case leftToRight = 2
     case rightToLeft = 3
 }
-protocol PipeSliderDelegate {
+public protocol PipeSliderDelegate {
     func pipeView(_ sender: PipeSlider, didChanged value: Double)
 }
-class PipeSlider: UIView {
 
-    var delegate: PipeSliderDelegate?
-    var pipeColor: UIColor = .blue {
+@IBDesignable
+open class PipeSlider: UIView {
+
+    public var delegate: PipeSliderDelegate?
+    
+    @IBInspectable
+    public var pipeColor: UIColor = .blue {
         didSet {
             pistonLayer.backgroundColor = pipeColor.cgColor
         }
     }
-    var textColor: UIColor = .white {
+    @IBInspectable
+    public var textColor: UIColor = .white {
         didSet {
             textLabel.textColor = textColor
         }
     }
-    var inset: CGFloat = 4.0 {
+    @IBInspectable
+    public var inset: CGFloat = 4.0 {
         didSet {
-            frameGenerator.inset = inset
-            pistonLayer.frame = frameGenerator.frame()
+            frameGenerator!.inset = inset
+            pistonLayer.frame = frameGenerator!.frame()
         }
     }
-    var direction: GrowingDirection? {
+    
+    var direction: GrowingDirection = .bottomUp {
         didSet {
-            switch direction! {
-            case .bottomUp:
-                frameGenerator = BottomUpRect(inset: inset,
-                                                  bound: bounds.size,
-                                                  value: CGFloat(value01(value)))
-            case .leftToRight:
-                frameGenerator = LeftToRightRect(inset: inset,
-                                                  bound: bounds.size,
-                                                  value: CGFloat(value01(value)))
-
-            case .rightToLeft:
-                frameGenerator = RightToLeftRect(inset: inset,
-                                                  bound: bounds.size,
-                                                  value: CGFloat(value01(value)))
-
-            case .topDown:
-                frameGenerator = TopDownRect(inset: inset,
-                                                  bound: bounds.size,
-                                                  value: CGFloat(value01(value)))
-
-            }
+            frameGenerator = getFrameGenerator(direction)
         }
     }
-    private var frameGenerator: DirectionalRect!
-    func setValue(_ value: Double) {
+    public func setValue(_ value: Double) {
         updatePipe(with: value)
         self.value = value
     }
-    private(set) var value: Double = 0.0 {
+    public private(set) var value: Double = 50.0 {
         didSet {
             textLabel.text = String(format: "%02.1f", value)
             delegate?.pipeView(self, didChanged: value)
         }
     }
-    var maximum: Double = 100.0
-    var minimum: Double = -100.0
+    @IBInspectable
+    public var maximum: Double = 100.0
+    @IBInspectable
+    public var minimum: Double = -100.0
     
+    private var frameGenerator: DirectionalRect!
     private var pistonLayer: CALayer = CALayer()
-    private var textLabel = UILabel()
-    func centerRect(of height: CGFloat) -> CGRect {
-        return CGRect(x:0 , y: (bounds.height - height) / 2.0, width: bounds.width, height: height)
-    }
-
-    fileprivate func configurePistonLayer() {
-        pistonLayer.frame = frameGenerator.frame()
-        pistonLayer.backgroundColor = pipeColor.cgColor
-        self.layer.addSublayer(pistonLayer)
-    }
+    private var textLabel: UILabel = UILabel()
     
-    fileprivate func configureTextLayer() {
-        textLabel.text = "00.0"
-        textLabel.textColor = textColor
-        textLabel.font = UIFont.systemFont(ofSize: min(bounds.width, bounds.height, 48.0) / 4.0, weight: .bold)
-        textLabel.textAlignment = .center
-        textLabel.numberOfLines = 0
-        textLabel.frame = centerRect(of: textLabel.font.lineHeight)
-        self.addSubview(textLabel)
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        if direction == nil {
-            direction = .bottomUp
-        }
-        configurePistonLayer()
-        configureTextLayer()
-        self.addGestureRecognizer(UIPanGestureRecognizer(target: self,
-                                                               action: #selector(onPan)))
-    }
-    func value01(_ value: Double) -> Double {
-        let maxLen = (maximum - minimum)
-        let len = value - minimum
-        if len >= 0 && maxLen > 0 {
-            return (len / maxLen)
-        }
-        return 0
-    }
-    func updatePipe( with value: Double) {
-        frameGenerator.value = CGFloat(value01(value))
-        pistonLayer.frame = frameGenerator.frame()
-    }
-    func calulateValue() -> Double {
-        return minimum + Double(frameGenerator.value) * (maximum - minimum)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard let location = touches.first?.location(in: self) else { return }
         frameGenerator.setValue(form: location)
@@ -141,7 +85,71 @@ class PipeSlider: UIView {
             value = calulateValue()
         }
     }
-    func setCornerRadius( for layer: CALayer) {
+
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        frameGenerator.bound = self.bounds.size
+        pistonLayer.frame = frameGenerator.frame()
+        setCornerRadius(for: pistonLayer)
+        setCornerRadius(for: self.layer)
+        textLabel.frame = centerRect(of: textLabel.font.lineHeight)
+    }
+    private func configurePistonLayer() {
+        pistonLayer.frame = frameGenerator.frame()
+        pistonLayer.backgroundColor = pipeColor.cgColor
+        self.layer.addSublayer(pistonLayer)
+    }
+    
+    private func configureTextLayer() {
+        let font = UIFont.systemFont(ofSize: min(bounds.width, bounds.height, 48.0) / 4.0, weight: .bold)
+        textLabel.frame = centerRect(of: font.lineHeight)
+        textLabel.text = String(format: "%02.1f", value)
+        textLabel.textColor = textColor
+        textLabel.font = font
+        textLabel.textAlignment = .center
+        textLabel.numberOfLines = 0
+        self.addSubview(textLabel)
+    }
+
+    private func setup() {
+        frameGenerator = getFrameGenerator(direction)
+        configurePistonLayer()
+        configureTextLayer()
+        self.addGestureRecognizer(UIPanGestureRecognizer(target: self,
+        action: #selector(onPan)))
+    }
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+    fileprivate func getFrameGenerator(_ direction: GrowingDirection) -> DirectionalRect {
+        switch direction {
+        case .bottomUp :
+            return BottomUpRect(inset: inset,
+                                          bound: bounds.size,
+                                          value: CGFloat(value01(value)))
+        case .leftToRight:
+            return LeftToRightRect(inset: inset,
+                                             bound: bounds.size,
+                                             value: CGFloat(value01(value)))
+            
+        case .rightToLeft:
+            return RightToLeftRect(inset: inset,
+                                             bound: bounds.size,
+                                             value: CGFloat(value01(value)))
+            
+        case .topDown:
+            return TopDownRect(inset: inset,
+                                         bound: bounds.size,
+                                         value: CGFloat(value01(value)))
+            
+        }
+    }
+    private func setCornerRadius( for layer: CALayer) {
         switch direction {
             case .bottomUp, .topDown :
                 layer.cornerRadius = layer.bounds.width <= 40.0 ? layer.bounds.width / 2.0 : layer.bounds.width / 10.0
@@ -151,13 +159,24 @@ class PipeSlider: UIView {
         layer.masksToBounds = true
 
     }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        frameGenerator.bound = self.bounds.size
+    private func centerRect(of height: CGFloat) -> CGRect {
+        return CGRect(x:0 , y: (bounds.height - height) / 2.0, width: bounds.width, height: height)
+    }
+    
+    private func value01(_ value: Double) -> Double {
+        let maxLen = (maximum - minimum)
+        let len = value - minimum
+        if len >= 0 && maxLen > 0 {
+            return (len / maxLen)
+        }
+        return 0
+    }
+    private func updatePipe( with value: Double) {
+        frameGenerator.value = CGFloat(value01(value))
         pistonLayer.frame = frameGenerator.frame()
-        setCornerRadius(for: pistonLayer)
-        setCornerRadius(for: self.layer)
-        textLabel.frame = centerRect(of: textLabel.font.lineHeight)
+    }
+    private func calulateValue() -> Double {
+        return minimum + Double(frameGenerator.value) * (maximum - minimum)
     }
 }
 
